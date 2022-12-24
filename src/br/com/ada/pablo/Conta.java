@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Conta {
-    int quant = 1;
-    String[] twitts = new String[50];
 
     Usuario usu = new Usuario();
 
@@ -106,6 +104,10 @@ public class Conta {
         }else {
             //Validação de credênciais, tentei fazer de uma maneira diferente.
             for (int i = 0; i < usu.usuarios.length; i++) {
+                if (usu.usuarios[i] == null){
+                    System.out.println("Login inválido!");
+                    telaPrincipal();
+                }
                 if (usu.usuarios[i].equals(logar)){
                     System.out.println("Login realizado!!:D \n " +
                             "Bem vindo " + login +"\n \n");
@@ -147,14 +149,15 @@ public class Conta {
         System.out.println("Aperte ENTER 3 vezes para enviar a postagem");
 
         Scanner scannerTwittar = new Scanner(System.in);
-        //Criando o formato da data
-        BufferedWriter escrever = new BufferedWriter(new FileWriter("twitters.txt", true));
+        OutputStream fos = new FileOutputStream("twitters.txt", true);
+        Writer osw = new OutputStreamWriter(fos);
+        BufferedWriter escrever = new BufferedWriter(osw);
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         System.out.println(dtf.format(now));
         String data = dtf.format(now);
-        String header = "@ " + this.usu.usuario + " | " + data;
-        escrever.newLine();
+        String header = "@" + this.usu.usuario + " | " + data;
         escrever.write("+++++++++++++++++++++++++++++++++++++++++");
         escrever.newLine();
         escrever.write(header);
@@ -166,14 +169,12 @@ public class Conta {
         while (linha != null && !linha.isEmpty()) {
             escrever.write(linha);
             escrever.newLine();
-            escrever.write(scannerTwittar.nextLine());
-            escrever.newLine();
             linha = scannerTwittar.nextLine();
-            //Tive dificuldade nessa parte :( não consigo colocar a mensagem no array
         }
         escrever.write("+++++++++++++++++++++++++++++++++++++++++");
         escrever.newLine();
         escrever.newLine();
+        escrever.close();
         System.out.println();
         System.out.println("Ver publicação[1]----Fazer um novo twit[2]----Sair[3]");
         int opcao = scannerTwittar.nextInt();
@@ -186,8 +187,6 @@ public class Conta {
             System.exit(0);
         }
         scannerTwittar.nextLine();
-
-        escrever.close();
         scannerTwittar.close();
     }
 
@@ -197,11 +196,7 @@ public class Conta {
         FileReader fis = new FileReader("twitters.txt");
         BufferedReader br = new BufferedReader(fis);
         String linha = br.readLine();
-        //Mostrando o twitt que acabou de ser criado porquê só é salvo no arquivo após o programa ser encerrado.
-        for (String twitt : twitts) {
-            System.out.println(twitt);
-        }
-        while(linha != null) {
+        while(br.ready()) {
             System.out.println(linha);
             linha = br.readLine();
         }
