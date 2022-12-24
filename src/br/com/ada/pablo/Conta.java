@@ -86,7 +86,7 @@ public class Conta {
                 System.out.println("Senhas não compatíveis");
             }
         }
-            scannerCriarConta.close();
+        scannerCriarConta.close();
     }
 
     public void loginConta() throws IOException {
@@ -146,7 +146,7 @@ public class Conta {
     public void twittar() throws IOException {
 
         System.out.println("Digite o que quer twittar\n");
-        System.out.println("Aperte ENTER 3 vezes para enviar a postagem");
+        System.out.println("Aperte ENTER 2 vezes para enviar a postagem");
 
         Scanner scannerTwittar = new Scanner(System.in);
         OutputStream fos = new FileOutputStream("twitters.txt", true);
@@ -193,12 +193,18 @@ public class Conta {
     public void publicacoes() throws IOException {
         Scanner scannerPublicacao = new Scanner(System.in);
         //Lendo o arquivo para imprimir os twitts antigos.
-        FileReader fis = new FileReader("twitters.txt");
-        BufferedReader br = new BufferedReader(fis);
-        String linha = br.readLine();
-        while(br.ready()) {
-            System.out.println(linha);
-            linha = br.readLine();
+        try{
+            FileReader fis = new FileReader("twitters.txt");
+            BufferedReader br = new BufferedReader(fis);
+            String linha = br.readLine();
+            while(br.ready()) {
+                System.out.println(linha);
+                linha = br.readLine();
+            }
+            fis.close();
+            br.close();
+        }  catch (IOException e){
+            System.out.println("0 Publicações");
         }
         System.out.println("Ver feed[1]-------Publicar[2]-------Sair[3]");
         System.out.print("Digite o número do que deseja fazer:");
@@ -215,7 +221,5 @@ public class Conta {
             telaPerfil();
         }
         scannerPublicacao.close();
-        fis.close();
-        br.close();
     }
 }
